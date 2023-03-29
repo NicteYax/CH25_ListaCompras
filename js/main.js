@@ -26,7 +26,7 @@ btnAgregar.addEventListener("click", function(event){
     
     if(txtNombre.value.length==0){
         txtNombre.style.border="solid thin red";
-        lista +="<li> Se debe escribir una cantidad válida.</li>";
+        lista +="<li> Se debe escribir un nombre válido.</li>";
         //alertValidacionesTexto.innerHTML="Se de escribir un nombre válido";
         alertValidaciones.style.display="block";
     } else{
@@ -37,7 +37,7 @@ btnAgregar.addEventListener("click", function(event){
         txtNumber.style.border="solid thin red";
         lista +="<li> Se debe escribir una cantidad válida.</li>";
         //alertValidacionesTexto.innerHTML+="Se de escribir una cantidad válida";
-        // alertValidaciones.style.display="block";
+        alertValidaciones.style.display="block";
     } else{
         txtNumber.style.border="";
     }//if numero
