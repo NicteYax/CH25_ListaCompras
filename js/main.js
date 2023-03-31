@@ -22,6 +22,8 @@ let isValid=true;
 let totalEnProductos=0;
 let costoTotal=0;
 
+let datos=[];//para almacenar los datos de la tabla
+
 //Limpiar campos
 btnClear.addEventListener("click", function(event){
     event.preventDefault();
@@ -102,7 +104,16 @@ btnAgregar.addEventListener("click", function(event){
             <td>${txtNombre.value}</td>
             <td>${txtNumber.value}</td>
             <td>${precio}</td>
-            </tr>`
+            </tr>`;
+
+    let elemento= `{
+                "id": ${contador},
+                "nombre": "${txtNombre.value}",
+                "cantidad": "${txtNumber.value}",
+                "precio": "${precio}"
+    }`;
+    datos.push(JSON.parse(elemento));
+    localStorage.setItem("datos", JSON.stringify(datos));       
 
     cuerpoTabla[0].insertAdjacentHTML("beforeend", row);
     contadorProductos.innerText=contador;
@@ -110,9 +121,14 @@ btnAgregar.addEventListener("click", function(event){
     productosTotal.innerText= totalEnProductos;
     costoTotal += precio * parseFloat(txtNumber.value);
     precioTotal.innerText = `$ ${costoTotal.toFixed(2)}`;
-    localStorage.setItem("contadorProductos", contador);
-    localStorage.setItem("totalEnProductos", totalEnProductos);
-    localStorage.setItem("costoTotal", costoTotal.toFixed(2));
+    let resumen=`{"contadorProductos": ${contador},
+                  "totalEnProductos" : ${totalEnProductos},
+                "costoTotal" : ${costoTotal.toFixed(2)}}`;
+    localStorage.setItem("resumen", resumen);    
+
+    //localStorage.setItem("contadorProductos", contador);
+    //localStorage.setItem("totalEnProductos", totalEnProductos);
+    //localStorage.setItem("costoTotal", costoTotal.toFixed(2));
     txtNombre.value="";
     txtNumber.value="";
     txtNombre.focus();
@@ -130,21 +146,41 @@ txtNumber.addEventListener("blur", function(event){
 }); //txtNumber.blur
 
 window.addEventListener("load", function(event){
-    if (this.localStorage.getItem("contadorProductos")==null){
-        this.localStorage.setItem("contadorProductos", "0");
-    }
+    if (localStorage.getItem("resumen")== null){
+        let resumen= `{"contadorProductos": ${contador},
+    "totalEnProductos" : ${totalEnProductos},
+    "costoTotal" : ${costoTotal.toFixed(2)}}`;
+    this.localStorage.setItem("resumen", resumen);
+    }//if json
+    let res= JSON.parse(localStorage.getItem("resumen"));
+    if (localStorage.getItem("datos")!=null){
+        datos= JSON.parse(localStorage.getItem("datos"));
 
-    if (this.localStorage.getItem("totalEnProductos")==null){
-        this.localStorage.setItem("totalEnProductos", "0");
-    }
+        datos.forEach(r =>{
+            let row= `<tr>
+            <th>${r.id}</th>
+            <td>${r.nombre}</td>
+            <td>${r.cantidad}</td>
+            <td>$ ${r.precio}</td>
+            </tr>`;
+            cuerpoTabla[0].insertAdjacentHTML("beforeend", row);
+        });
+    }// != null
+    // if (this.localStorage.getItem("contadorProductos")==null){
+    //     this.localStorage.setItem("contadorProductos", "0");
+    // }
 
-    if (this.localStorage.getItem("costoTotal")==null){
-        this.localStorage.setItem("costoTotal", "0.0");
-    }
+    // if (this.localStorage.getItem("totalEnProductos")==null){
+    //     this.localStorage.setItem("totalEnProductos", "0");
+    // }
 
-    contador = parseInt(localStorage.getItem("contadorProductos"));
-    totalEnProductos = parseInt(localStorage.getItem("totalEnProductos"));
-    costoTotal = parseFloat(localStorage.getItem("costoTotal"));
+    // if (this.localStorage.getItem("costoTotal")==null){
+    //     this.localStorage.setItem("costoTotal", "0.0");
+    // }
+
+    contador=res.contadorProductos;//contador = parseInt(localStorage.getItem("contadorProductos"));
+    totalEnProductos= res.totalEnProductos;//totalEnProductos = parseInt(localStorage.getItem("totalEnProductos"));
+    costoTotal= res.costoTotal;//costoTotal = parseFloat(localStorage.getItem("costoTotal"));
 
     contadorProductos.innerText=contador;
     productosTotal.innerText=totalEnProductos;
